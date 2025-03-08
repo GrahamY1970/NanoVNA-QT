@@ -4,7 +4,8 @@
 #include <vector>
 #include <map>
 #include <eigen3/Eigen/Core>
-#include <xavna/common.H>
+#include <../libxavna/include/common.H>
+
 using namespace std;
 using namespace Eigen;
 

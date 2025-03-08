@@ -118,3 +118,5 @@ pcb/#*#
 /ltmain.sh
 # http://www.gnu.org/software/texinfo
 /texinfo.tex
+
+**/.qtc_clangd

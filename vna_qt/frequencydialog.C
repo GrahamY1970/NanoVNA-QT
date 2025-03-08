@@ -1,8 +1,8 @@
 #include "utility.H"
 #include "frequencydialog.H"
 #include "ui_frequencydialog.h"
-#include <xavna/xavna_cpp.H>
-#include <xavna/workarounds.H>
+#include <../libxavna/include/xavna_cpp.H>
+#include <../libxavna/include/workarounds.H>
 
 using namespace xaxaxa;
 FrequencyDialog::FrequencyDialog(QWidget *parent) :

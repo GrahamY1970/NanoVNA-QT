@@ -2,7 +2,7 @@
 #include "ui_xavna_mock_ui_dialog.h"
 #include <string>
 #include <stdio.h>
-#include <xavna/workarounds.H>
+#include "../../libxavna/include/workarounds.H"
 
 
 using namespace std;
