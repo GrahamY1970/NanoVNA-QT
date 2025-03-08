@@ -16,10 +16,10 @@
 #include "ui_graphlimitsdialog.h"
 #include "calibrationfinetunedialog.H"
 #include "firmwareupdatedialog.H"
-#include <xavna/calibration.H>
-#include <xavna/xavna_cpp.H>
-#include <xavna/xavna_generic.H>
-#include <xavna/workarounds.H>
+#include <../libxavna/include/calibration.H>
+#include <../libxavna/include/xavna_cpp.H>
+#include <../libxavna/include/xavna_generic.H>
+#include <../libxavna/include/workarounds.H>
 #include <iostream>
 #include <stdexcept>
 #include <time.h>
@@ -205,6 +205,8 @@ void MainWindow::setupViews() {
     ui->actionExport_s1p_port_2->setEnabled(!tr);
 
     viewIsTR = tr;
+
+    ui->progressBar->setValue(0);
 }
 
 void MainWindow::destroyViews() {
@@ -787,12 +789,17 @@ complex<double> calculatePortExt(complex<double> refl, complex<double> Tcable, d
 
 void MainWindow::updateViews(int freqIndex) {
     computeViews(freqIndex);
+
+    int progress = (int)(100.0 * freqIndex/nv.values.size());
+    ui->progressBar->setValue(progress);
+
     if(ui->actionDisable_chart_update->isChecked()) return;
     nv.updateViews(freqIndex);
 
     time_t t = time(nullptr);
-    if(abs(int64_t(t) - int64_t(lastDTFUpdate)) >= 1)
+    if(abs(int64_t(t) - int64_t(lastDTFUpdate)) >= 1) {
         dtf.updateValues(nv.values);
+    }
     lastDTFUpdate = t;
 }
 
@@ -870,9 +877,42 @@ void MainWindow::on_actionCapture_S_1_triggered() {
     captureSParam(&tmp_sn1);
 }
 
+
 void MainWindow::on_actionCapture_S_2_triggered() {
     captureSParam(&tmp_sn2);
 }
+
+void MainWindow::on_actionCapture_S_1_and_S_2_triggered()
+{
+    //captureSParam(&tmp_sn1);
+
+    vector<VNACalibratedValue> *var;
+    var = &tmp_sn1;
+    enableUI(false);
+    var->resize(vna->nPoints);
+    vna->takeMeasurement([this,var](const vector<VNARawValue>& vals){
+        assert(curCal != nullptr);
+        for(int i=0;i<vna->nPoints;i++)
+            var->at(i) = curCal->computeValue(curCalCoeffs.at(i),vals.at(i));
+        QMetaObject::invokeMethod(this, "on_actionCapture_S_1_and_S_2_triggered_step2", Qt::QueuedConnection);
+    });
+}
+
+
+void MainWindow::on_actionCapture_S_1_and_S_2_triggered_step2()
+{
+    vector<VNACalibratedValue> *var;
+    var = &tmp_sn2;
+    enableUI(false);
+    var->resize(vna->nPoints);
+    vna->takeMeasurement([this,var](const vector<VNARawValue>& vals){
+        assert(curCal != nullptr);
+        for(int i=0;i<vna->nPoints;i++)
+            var->at(i) = curCal->computeValue(curCalCoeffs.at(i),vals.at(i));
+        QMetaObject::invokeMethod(this, "sMeasurementCompleted", Qt::QueuedConnection);
+    });
+}
+
 
 void MainWindow::on_actionExport_s2p_triggered() {
     vector<VNACalibratedValue> res(vna->nPoints);
@@ -1109,3 +1149,4 @@ void MainWindow::on_t_extz_returnPressed() {
 void MainWindow::on_slider_extz_valueChanged(int) {
     updatePortExtension();
 }
+

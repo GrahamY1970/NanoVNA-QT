@@ -4,8 +4,8 @@
 #include "utility.H"
 #include "ui_markerslider.h"
 #include "graphpanel.H"
-#include <xavna/common.H>
-#include <xavna/workarounds.H>
+#include <../libxavna/include/common.H>
+#include <../libxavna/include/workarounds.H>
 #include <QLineSeries>
 #include <QScatterSeries>
 #include <QValueAxis>
@@ -18,7 +18,7 @@ using namespace xaxaxa;
 
 const vector<array<double,3> > NetworkView::defaultGraphLimits = {
     {-1000,-999, 12},
-    {-80, 30, 11},      //TYPE_MAG=1
+    {-100, 30, 13},      //TYPE_MAG=1
     {-180, 180, 12},    //TYPE_PHASE
     {0, 50, 10},        //TYPE_GRPDELAY
     {1, 11, 10},        //TYPE_SWR
@@ -185,8 +185,19 @@ void NetworkView::updateXAxis(double start, double step, int cnt) {
 
 void NetworkView::updateViews(int freqIndex) {
     if(freqIndex >= (int)values.size()) return;
-    for(int i=0;i<(int)this->views.size();i++) {
-        updateView(i, freqIndex);
+
+    // if the size of the array is large, only update every 100 samples
+    if ((int)values.size() > 1024) {
+        if (freqIndex % 100 == 0 || freqIndex == (int)values.size() - 1) {
+            for(int i=0;i<(int)this->views.size();i++) {
+                updateView(i, -1);
+            }
+        }
+    }
+    else {
+        for(int i=0;i<(int)this->views.size();i++) {
+            updateView(i, freqIndex);
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 #ifndef FIRMWAREUPDATER_H
 #define FIRMWAREUPDATER_H
+#include <cstdint>
 #include <string>
 #include <functional>
 #include <pthread.h>

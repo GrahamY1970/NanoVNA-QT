@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <xavna/common.H>
+#include <../libxavna/include/common.H>
 #include "touchstone.H"
 using namespace std;
 using namespace xaxaxa;

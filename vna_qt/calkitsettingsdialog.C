@@ -3,7 +3,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
-#include <xavna/calibration.H>
+#include <../libxavna/include/calibration.H>
 #include "calkitsettingsdialog.H"
 #include "ui_calkitsettingsdialog.h"
 #include "ui_calkitsettingswidget.h"

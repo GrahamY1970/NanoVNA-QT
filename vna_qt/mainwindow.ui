@@ -150,6 +150,26 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <spacer name="verticalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="value">
+        <number>24</number>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>
@@ -215,9 +235,6 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
-         </property>
-         <property name="sizeAdjustPolicy">
-          <enum>QComboBox::AdjustToMinimumContentsLength</enum>
          </property>
          <item>
           <property name="text">
@@ -365,7 +382,7 @@ Measurements</string>
      <x>0</x>
      <y>0</y>
      <width>960</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuCalibration">
@@ -397,6 +414,7 @@ Measurements</string>
     <addaction name="actionExport_s1p_port_2"/>
     <addaction name="actionCapture_S_1"/>
     <addaction name="actionCapture_S_2"/>
+    <addaction name="actionCapture_S_1_and_S_2"/>
     <addaction name="actionExport_s2p"/>
     <addaction name="separator"/>
     <addaction name="actionExport_csv"/>
@@ -466,8 +484,8 @@ Measurements</string>
    </property>
    <property name="minimumSize">
     <size>
-     <width>78</width>
-     <height>168</height>
+     <width>96</width>
+     <height>189</height>
     </size>
    </property>
    <property name="features">
@@ -844,6 +862,11 @@ Measurements</string>
   <action name="actionFine_tune">
    <property name="text">
     <string>Fine tune...</string>
+   </property>
+  </action>
+  <action name="actionCapture_S_1_and_S_2">
+   <property name="text">
+    <string>Capture S*1 and S*2</string>
    </property>
   </action>
  </widget>

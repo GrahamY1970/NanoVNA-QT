@@ -7,7 +7,7 @@
 #include <functional>
 #include <map>
 #include <string>
-#include <xavna/common.H>
+#include <../libxavna/include/common.H>
 #include "calkitsettings.H"
 #include "networkview.H"
 #include "dtfwindow.H"
@@ -227,6 +227,9 @@ private slots:
     void on_actionFine_tune_triggered();
     void on_t_extz_returnPressed();
     void on_slider_extz_valueChanged(int value);
+
+    void on_actionCapture_S_1_and_S_2_triggered();
+    void on_actionCapture_S_1_and_S_2_triggered_step2();
 };
 
 #endif // MAINWINDOW_H

@@ -3,7 +3,7 @@
 #include <QLayout>
 #include <functional>
 #include <array>
-#include <xavna/common.H>
+#include <../libxavna/include/common.H>
 
 namespace QtCharts {
 class QChartView;

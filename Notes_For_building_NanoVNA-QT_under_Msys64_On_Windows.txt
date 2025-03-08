@@ -1,0 +1,414 @@
+For MSys2
+
+Add C:\msys64 to the exclude list of Anti Virus to allow c++ and gcc to be installed.
+
+The below steps have been included in the setup scripts.
+
+pacman -Syuu
+
+
+pacman -S mingw-w64-x86_64-gcc
+pacman -S mingw-w64-x86_64-toolchain
+pacman -S mingw-w64-x86_64-geany
+pacman -S zip
+pacman -S git
+
+or pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-toolchain mingw-w64-x86_64-geany zip git
+
+pacman -S autotools
+pacman -S automake
+pacman -S libtool
+
+or pacman -S autotools automake libtool
+
+pacman -S mingw-w64-x86_64-eigen3
+pacman -S mingw-w64-x86_64-fftw
+pacman -S mingw-w64-x86_64-angleproject
+pacman -S mingw-w64-x86_64-qt5
+pacman -S mingw-w64-x86_64-qt-creator
+
+or pacman -S mingw-w64-x86_64-eigen3 mingw-w64-x86_64-fftw mingw-w64-x86_64-angleproject mingw-w64-x86_64-qt5 mingw-w64-x86_64-qt-creator
+
+git clone https://github.com/nanovna-v2/NanoVNA-QT.git
+cd NanoVNA-QT/
+
+
+#############################################################################################################
+Note that in the present state it doesn't compile due to not having the correct paths to some of the headers.
+See below for the changes made.
+#############################################################################################################
+
+autoreconf --install
+./configure
+make		// makes the release version
+make debug	// makes the debug version
+
+cd libxavna/xavna_mock_ui/
+qmake
+make		// makes the release version
+make debug	// makes the debug version
+
+
+cd ../../vna_qt/
+qmake
+make		// makes the release version
+make debug	// makes the debug version
+
+
+
+############################################################################################################
+The above build steps can be performed using the below deploy script.
+This also packages the required files in a zip file.
+############################################################################################################
+
+cd ~/NanoVNA-QT
+./deploy_windows_msys64.sh
+
+
+
+
+############################################################################################################
+Use the below "git diff | tee NanoVNA-QT_patch.txt" to create a patch from a fixed directory structure.
+Then you can use "git apply NanoVNA-QT_patch.txt" on a fresh git clone
+############################################################################################################
+
+
+grahamy@SML-0707 MINGW64 /d/Users/grahamy/Documents/msys2_home/NanoVNA-QT
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   libxavna/xavna_mock_ui/xavna_mock_ui_dialog.C
+        modified:   vna_qt/calibrationfinetunedialog.H
+        modified:   vna_qt/calkitsettings.H
+        modified:   vna_qt/calkitsettingsdialog.C
+        modified:   vna_qt/firmwareupdater.C
+        modified:   vna_qt/firmwareupdater.H
+        modified:   vna_qt/frequencydialog.C
+        modified:   vna_qt/mainwindow.C
+        modified:   vna_qt/mainwindow.H
+        modified:   vna_qt/mainwindow.ui
+        modified:   vna_qt/networkview.C
+        modified:   vna_qt/networkview.H
+        modified:   vna_qt/touchstone.H
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        GY_nanoVNA-QT_patch.txt
+        deploy_windows_gy.sh
+        vna_qt/object_script.vna_qt.Debug
+        vna_qt/object_script.vna_qt.Release
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+grahamy@SML-0707 MINGW64 /d/Users/grahamy/Documents/msys2_home/NanoVNA-QT
+$ git diff | tee NanoVNA-QT_patch.txt
+diff --git a/libxavna/xavna_mock_ui/xavna_mock_ui_dialog.C b/libxavna/xavna_mock_ui/xavna_mock_ui_dialog.C
+index 00b5225..256816b 100644
+--- a/libxavna/xavna_mock_ui/xavna_mock_ui_dialog.C
++++ b/libxavna/xavna_mock_ui/xavna_mock_ui_dialog.C
+@@ -2,7 +2,8 @@
+ #include "ui_xavna_mock_ui_dialog.h"
+ #include <string>
+ #include <stdio.h>
+-#include <xavna/workarounds.H>
++//#include <xavna/workarounds.H>
++#include "../../libxavna/include/workarounds.H"
+
+
+ using namespace std;
+diff --git a/vna_qt/calibrationfinetunedialog.H b/vna_qt/calibrationfinetunedialog.H
+index e7ff3be..93de80f 100644
+--- a/vna_qt/calibrationfinetunedialog.H
++++ b/vna_qt/calibrationfinetunedialog.H
+@@ -5,8 +5,13 @@
+ #include <QAbstractButton>
+ #include <vector>
+ #include <functional>
+-#include <xavna/common.H>
+-#include <xavna/calibration.H>
++
++//#include <xavna/common.H>
++#include <../libxavna/include/common.H>
++
++//#include <xavna/calibration.H>
++#include <../libxavna/include/calibration.H>
++
+ #include "calkitsettings.H"
+ using namespace std;
+ using namespace xaxaxa;
+diff --git a/vna_qt/calkitsettings.H b/vna_qt/calkitsettings.H
+index 45d97b8..f380e51 100644
+--- a/vna_qt/calkitsettings.H
++++ b/vna_qt/calkitsettings.H
+@@ -4,7 +4,10 @@
+ #include <string>
+ #include <vector>
+ #include <iostream>
+-#include <xavna/common.H>
++
++//#include <xavna/common.H>
++#include <../libxavna/include/common.H>
++
+ #include "touchstone.H"
+ using namespace std;
+ using namespace xaxaxa;
+diff --git a/vna_qt/calkitsettingsdialog.C b/vna_qt/calkitsettingsdialog.C
+index 77c9e9b..8bdc82c 100644
+--- a/vna_qt/calkitsettingsdialog.C
++++ b/vna_qt/calkitsettingsdialog.C
+@@ -3,7 +3,10 @@
+ #include <QFileDialog>
+ #include <QMessageBox>
+ #include <QTextStream>
+-#include <xavna/calibration.H>
++
++//#include <xavna/calibration.H>
++#include <../libxavna/include/calibration.H>
++
+ #include "calkitsettingsdialog.H"
+ #include "ui_calkitsettingsdialog.h"
+ #include "ui_calkitsettingswidget.h"
+diff --git a/vna_qt/firmwareupdater.C b/vna_qt/firmwareupdater.C
+index 4f10fc5..9b41ab8 100644
+--- a/vna_qt/firmwareupdater.C
++++ b/vna_qt/firmwareupdater.C
+@@ -1,5 +1,8 @@
+ #include "firmwareupdater.H"
+-#include <xavna/platform_abstraction.H>
++
++//#include <xavna/platform_abstraction.H>
++#include <../../libxavna/include/platform_abstraction.H>
++
+ #include <errno.h>
+ #include <string.h>
+ #include <unistd.h>
+diff --git a/vna_qt/firmwareupdater.H b/vna_qt/firmwareupdater.H
+index 7654211..896a79b 100644
+--- a/vna_qt/firmwareupdater.H
++++ b/vna_qt/firmwareupdater.H
+@@ -1,5 +1,6 @@
+ #ifndef FIRMWAREUPDATER_H
+ #define FIRMWAREUPDATER_H
++#include <cstdint>
+ #include <string>
+ #include <functional>
+ #include <pthread.h>
+diff --git a/vna_qt/frequencydialog.C b/vna_qt/frequencydialog.C
+index 2d43805..1bdd5f5 100644
+--- a/vna_qt/frequencydialog.C
++++ b/vna_qt/frequencydialog.C
+@@ -1,8 +1,13 @@
+ #include "utility.H"
+ #include "frequencydialog.H"
+ #include "ui_frequencydialog.h"
++/*
+ #include <xavna/xavna_cpp.H>
+ #include <xavna/workarounds.H>
++*/
++#include <../libxavna/include/xavna_cpp.H>
++#include <../libxavna/include/workarounds.H>
++
+
+ using namespace xaxaxa;
+ FrequencyDialog::FrequencyDialog(QWidget *parent) :
+diff --git a/vna_qt/mainwindow.C b/vna_qt/mainwindow.C
+index aac4abb..dc0adc3 100644
+--- a/vna_qt/mainwindow.C
++++ b/vna_qt/mainwindow.C
+@@ -16,10 +16,19 @@
+ #include "ui_graphlimitsdialog.h"
+ #include "calibrationfinetunedialog.H"
+ #include "firmwareupdatedialog.H"
++
++/*
+ #include <xavna/calibration.H>
+ #include <xavna/xavna_cpp.H>
+ #include <xavna/xavna_generic.H>
+ #include <xavna/workarounds.H>
++*/
++#include <../libxavna/include/calibration.H>
++#include <../libxavna/include/xavna_cpp.H>
++#include <../libxavna/include/xavna_generic.H>
++#include <../libxavna/include/workarounds.H>
++
++
+ #include <iostream>
+ #include <stdexcept>
+ #include <time.h>
+@@ -870,10 +879,43 @@ void MainWindow::on_actionCapture_S_1_triggered() {
+     captureSParam(&tmp_sn1);
+ }
+
++
+ void MainWindow::on_actionCapture_S_2_triggered() {
+     captureSParam(&tmp_sn2);
+ }
+
++void MainWindow::on_actionCapture_S_1_and_S_2_triggered()
++{
++    //captureSParam(&tmp_sn1);
++
++    vector<VNACalibratedValue> *var;
++    var = &tmp_sn1;
++    enableUI(false);
++    var->resize(vna->nPoints);
++    vna->takeMeasurement([this,var](const vector<VNARawValue>& vals){
++        assert(curCal != nullptr);
++        for(int i=0;i<vna->nPoints;i++)
++            var->at(i) = curCal->computeValue(curCalCoeffs.at(i),vals.at(i));
++        QMetaObject::invokeMethod(this, "on_actionCapture_S_1_and_S_2_triggered_step2", Qt::QueuedConnection);
++    });
++}
++
++
++void MainWindow::on_actionCapture_S_1_and_S_2_triggered_step2()
++{
++    vector<VNACalibratedValue> *var;
++    var = &tmp_sn2;
++    enableUI(false);
++    var->resize(vna->nPoints);
++    vna->takeMeasurement([this,var](const vector<VNARawValue>& vals){
++        assert(curCal != nullptr);
++        for(int i=0;i<vna->nPoints;i++)
++            var->at(i) = curCal->computeValue(curCalCoeffs.at(i),vals.at(i));
++        QMetaObject::invokeMethod(this, "sMeasurementCompleted", Qt::QueuedConnection);
++    });
++}
++
++
+ void MainWindow::on_actionExport_s2p_triggered() {
+     vector<VNACalibratedValue> res(vna->nPoints);
+     if(vna->isTRMode()) {
+@@ -1109,3 +1151,4 @@ void MainWindow::on_t_extz_returnPressed() {
+ void MainWindow::on_slider_extz_valueChanged(int) {
+     updatePortExtension();
+ }
++
+diff --git a/vna_qt/mainwindow.H b/vna_qt/mainwindow.H
+index e0e449b..7eab9fb 100644
+--- a/vna_qt/mainwindow.H
++++ b/vna_qt/mainwindow.H
+@@ -7,7 +7,10 @@
+ #include <functional>
+ #include <map>
+ #include <string>
+-#include <xavna/common.H>
++
++//#include <xavna/common.H>
++#include <../libxavna/include/common.H>
++
+ #include "calkitsettings.H"
+ #include "networkview.H"
+ #include "dtfwindow.H"
+@@ -227,6 +230,9 @@ private slots:
+     void on_actionFine_tune_triggered();
+     void on_t_extz_returnPressed();
+     void on_slider_extz_valueChanged(int value);
++
++    void on_actionCapture_S_1_and_S_2_triggered();
++    void on_actionCapture_S_1_and_S_2_triggered_step2();
+ };
+
+ #endif // MAINWINDOW_H
+diff --git a/vna_qt/mainwindow.ui b/vna_qt/mainwindow.ui
+index 6604bf4..44a61ad 100644
+--- a/vna_qt/mainwindow.ui
++++ b/vna_qt/mainwindow.ui
+@@ -216,9 +216,6 @@
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+-         <property name="sizeAdjustPolicy">
+-          <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+-         </property>
+          <item>
+           <property name="text">
+            <string>SOL (1 port)</string>
+@@ -397,6 +394,7 @@ Measurements</string>
+     <addaction name="actionExport_s1p_port_2"/>
+     <addaction name="actionCapture_S_1"/>
+     <addaction name="actionCapture_S_2"/>
++    <addaction name="actionCapture_S_1_and_S_2"/>
+     <addaction name="actionExport_s2p"/>
+     <addaction name="separator"/>
+     <addaction name="actionExport_csv"/>
+@@ -466,8 +464,8 @@ Measurements</string>
+    </property>
+    <property name="minimumSize">
+     <size>
+-     <width>78</width>
+-     <height>168</height>
++     <width>96</width>
++     <height>189</height>
+     </size>
+    </property>
+    <property name="features">
+@@ -846,6 +844,11 @@ Measurements</string>
+     <string>Fine tune...</string>
+    </property>
+   </action>
++  <action name="actionCapture_S_1_and_S_2">
++   <property name="text">
++    <string>Capture S*1 and S*2</string>
++   </property>
++  </action>
+  </widget>
+  <layoutdefault spacing="6" margin="11"/>
+  <resources/>
+diff --git a/vna_qt/networkview.C b/vna_qt/networkview.C
+index 87f27d0..e66249b 100644
+--- a/vna_qt/networkview.C
++++ b/vna_qt/networkview.C
+@@ -4,8 +4,13 @@
+ #include "utility.H"
+ #include "ui_markerslider.h"
+ #include "graphpanel.H"
++/*
+ #include <xavna/common.H>
+ #include <xavna/workarounds.H>
++*/
++#include <../libxavna/include/common.H>
++#include <../libxavna/include/workarounds.H>
++
+ #include <QLineSeries>
+ #include <QScatterSeries>
+ #include <QValueAxis>
+diff --git a/vna_qt/networkview.H b/vna_qt/networkview.H
+index 3524fc6..4d0c41c 100644
+--- a/vna_qt/networkview.H
++++ b/vna_qt/networkview.H
+@@ -3,7 +3,10 @@
+ #include <QLayout>
+ #include <functional>
+ #include <array>
+-#include <xavna/common.H>
++
++//#include <xavna/common.H>
++#include <../libxavna/include/common.H>
++
+
+ namespace QtCharts {
+ class QChartView;
+diff --git a/vna_qt/touchstone.H b/vna_qt/touchstone.H
+index 2bf2131..9363ecc 100644
+--- a/vna_qt/touchstone.H
++++ b/vna_qt/touchstone.H
+@@ -4,7 +4,10 @@
+ #include <vector>
+ #include <map>
+ #include <eigen3/Eigen/Core>
+-#include <xavna/common.H>
++
++//#include <xavna/common.H>
++#include <../libxavna/include/common.H>
++
+ using namespace std;
+ using namespace Eigen;
+
+
+grahamy@SML-0707 MINGW64 /d/Users/grahamy/Documents/msys2_home/NanoVNA-QT
+$

@@ -5,8 +5,8 @@
 #include <QAbstractButton>
 #include <vector>
 #include <functional>
-#include <xavna/common.H>
-#include <xavna/calibration.H>
+#include <../libxavna/include/common.H>
+#include <../libxavna/include/calibration.H>
 #include "calkitsettings.H"
 using namespace std;
 using namespace xaxaxa;

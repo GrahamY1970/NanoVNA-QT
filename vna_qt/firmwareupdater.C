@@ -1,5 +1,5 @@
 #include "firmwareupdater.H"
-#include <xavna/platform_abstraction.H>
+#include <../../libxavna/include/platform_abstraction.H>
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
